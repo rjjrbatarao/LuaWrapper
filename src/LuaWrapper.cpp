@@ -43,6 +43,16 @@ String LuaWrapper::Lua_dostring(const String *script) {
   return result;
 }
 
+String LuaWrapper::Lua_loadstring(const String *script){
+  String scriptWithConstants = "" + *script;
+  String result;
+  if (luaL_loadstring(_state, scriptWithConstants.c_str())) {
+    result += "# lua error:\n" + String(lua_tostring(_state, -1));
+    lua_pop(_state, 1);
+  }
+  return result;	
+}
+
 String LuaWrapper::Lua_dofile(const String filename){
 	String result;
 	if(luaL_dofile(_state, filename.c_str())){
