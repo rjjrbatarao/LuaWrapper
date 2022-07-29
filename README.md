@@ -1,6 +1,6 @@
 # ESP Arduino Lua
 
-This Arduino library provides the [lua](https://www.lua.org/) 5.3.5 ( [release](https://www.lua.org/ftp/lua-5.3.5.tar.gz) ) scripting engine for ESP8266/ESP32 sketches. This allows dynamic execution of Lua code on the Arduino without having to compile and flash a new firmware. 
+This Arduino library provides the [lua](https://www.lua.org/) 5.3.5 ( [release](https://www.lua.org/ftp/lua-5.3.5.tar.gz) ) scripting engine for ESP32! sketches. This allows dynamic execution of Lua code on the Arduino without having to compile and flash a new firmware. Note modifications from the original library make it uncompilable when esp8266 is used.
 
 Along with the Lua 5.3.5 Core the following Lua standard libraries are included:
 
@@ -8,7 +8,7 @@ Along with the Lua 5.3.5 Core the following Lua standard libraries are included:
 - math
 - table (insert(), sort(), remove(), ...)
 - string (len(), match(), ...)
-
+- cjson (newly added)
 ##  Sample sketch example: ExecuteScriptFromSerial.ino
 
 After installing the library, some sketch examples are available from the *File* menu, then *Examples* and finally under *ESP-Arduino-Lua*. The examples include **ExecuteScriptFromSerial** which takes a lua script from the serial line and executes it. As an example, the following standard Arduino functions are available in lua scripts as bindings:
