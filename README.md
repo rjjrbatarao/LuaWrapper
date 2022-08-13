@@ -11,7 +11,7 @@ Along with the Lua 5.3.5 Core the following Lua standard libraries are included:
 - cjson (newly added)
 - luaBridge expose class in lua
 ##  Prerequisite
-- find the platform.txt of the esp32 installation and add this -frtti at the end of this line compiler.cpp.flags.esp32
+- find the platform.txt of the esp32 installation usually found on this path AppData\Local\Arduino15\packages\esp32\hardware\esp32\2.x.x and add this -frtti at the end of this line compiler.cpp.flags.esp32
 
 ##  Sample sketch example: ExecuteScriptFromSerial.ino
 
