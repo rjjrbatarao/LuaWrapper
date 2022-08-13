@@ -9,6 +9,7 @@ Along with the Lua 5.3.5 Core the following Lua standard libraries are included:
 - table (insert(), sort(), remove(), ...)
 - string (len(), match(), ...)
 - cjson (newly added)
+- luaBridge expose class in lua
 ##  Sample sketch example: ExecuteScriptFromSerial.ino
 
 After installing the library, some sketch examples are available from the *File* menu, then *Examples* and finally under *ESP-Arduino-Lua*. The examples include **ExecuteScriptFromSerial** which takes a lua script from the serial line and executes it. As an example, the following standard Arduino functions are available in lua scripts as bindings:
