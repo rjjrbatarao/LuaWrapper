@@ -1,11 +1,78 @@
 #include "LuaWrapper.h"
 
 LuaWrapper::LuaWrapper() {
-  _state = luaL_newstate();
+  lua_state = NULL;
+  _state = NULL;
+  createState(LUAWRAPPER_USE_PSRAM != 0);
+}
+
+LuaWrapper::LuaWrapper(bool usePsram) {
+  lua_state = NULL;
+  _state = NULL;
+  createState(usePsram);
+}
+
+// Creates the Lua state.  With PSRAM requested (and available) the state is
+// built on a PSRAM backed allocator; otherwise this is exactly the previous
+// behaviour (`luaL_newstate()`), so a sketch on a board without PSRAM (or with
+// the feature switched off) runs the same code path as before.
+void LuaWrapper::createState(bool usePsram) {
+  _memory.reset();
+
+  if (usePsram && psramAvailable()) {
+    _memory.psram = true;
+    _state = lua_newstate(luaWrapperAlloc, &_memory);
+    if (_state == NULL) {
+      // PSRAM unusable at this point: fall through to internal SRAM.
+      _memory.psram = false;
+    }
+  }
+
+  if (_state == NULL) {
+    _state = luaL_newstate();
+    _memory.reset();
+  }
+
   lua_state = _state;
   luaL_openlibs(_state);
   lua_settop(_state, 0);
-  registerImport();  
+  registerImport();
+}
+
+bool LuaWrapper::psramAvailable() {
+#if defined(ARDUINO_ARCH_ESP32)
+  return psramFound();
+#else
+  return false;
+#endif
+}
+
+bool LuaWrapper::psramEnabled() const {
+  return _memory.psram;
+}
+
+size_t LuaWrapper::luaMemoryBytes() const {
+  return _memory.used;
+}
+
+size_t LuaWrapper::luaMemoryPeakBytes() const {
+  return _memory.peak;
+}
+
+String LuaWrapper::Lua_meminfo() {
+  String info = "lua heap: ";
+  info += String((unsigned long)_memory.used);
+  info += " bytes (peak ";
+  info += String((unsigned long)_memory.peak);
+  info += "), in ";
+  info += _memory.psram ? "PSRAM" : "internal SRAM";
+#if defined(ARDUINO_ARCH_ESP32)
+  if (_memory.psram) {
+    info += ", PSRAM free: ";
+    info += String((unsigned long)ESP.getFreePsram());
+  }
+#endif
+  return info;
 }
 
 int LuaWrapper::luaLoadFile(lua_State *L) {
